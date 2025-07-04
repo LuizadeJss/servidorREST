@@ -36,6 +36,19 @@ public class TarefaController {
         return dao.findAll();
     }
 
+    @GetMapping("/resumo")
+    public Map<String, Long> obterResumoTarefas() {
+        List<Tarefa> todas = dao.findAll();
+        long concluidas = todas.stream().filter(Tarefa::isConcluida).count();
+        long pendentes = todas.size() - concluidas;
+
+        Map<String, Long> resumo = new HashMap<>();
+        resumo.put("concluidas", concluidas);
+        resumo.put("pendentes", pendentes);
+
+        return resumo;
+    }
+
     @PutMapping("/{id}/concluir")
     public ResponseEntity<Tarefa> concluirTarefa(@PathVariable Long id) {
         Optional<Tarefa> opt = dao.findById(id);
